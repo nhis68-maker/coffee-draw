@@ -31,7 +31,7 @@
 <body>
 
 <div class="left-panel">
-  <h1>? 월간 교육 커피쿠폰 추첨</h1>
+  <h1>☕ 월간 교육 커피쿠폰 추첨</h1>
   <p style="margin-top: 10px; color: #a4b0be;">스마트폰 카메라로 QR 코드를 스캔하세요!</p>
   
   <div id="qrcode"></div>
@@ -48,7 +48,7 @@
 </div>
 
 <script>
-  // TODO: https://www.npoint.io/docs/499721cec5b08e2a1c0b
+  // 올바른 API 주소 (api.npoint.io)
   const API_URL = "https://api.npoint.io/2b0ec784b5ba17da70e2";
 
   let participants = [];
@@ -105,7 +105,7 @@
       setTimeout(() => {
         const card = document.createElement('div');
         card.className = 'winner-card';
-        card.textContent = `?? ${winner}`;
+        card.textContent = `🎉 ${winner}`;
         winnerContainer.appendChild(card);
       }, index * 300);
     });
