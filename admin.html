@@ -7,14 +7,18 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Noto Sans KR', sans-serif; background: #2f3542; color: white; display: flex; height: 100vh; padding: 20px; gap: 20px; }
-    .left-panel { flex: 1; background: #353b48; border-radius: 16px; padding: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .left-panel { flex: 1; background: #353b48; border-radius: 16px; padding: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
     .right-panel { flex: 1; background: #353b48; border-radius: 16px; padding: 30px; display: flex; flex-direction: column; }
     
     #qrcode { background: white; padding: 20px; border-radius: 12px; margin: 20px 0; }
     .count { font-size: 20px; font-weight: bold; color: #ffa502; margin-bottom: 20px; }
     
+    .btn-group { display: flex; gap: 10px; }
     .draw-btn { padding: 15px 30px; font-size: 20px; font-weight: bold; background: #ff4757; color: white; border: none; border-radius: 8px; cursor: pointer; }
     .draw-btn:hover { background: #ff6b81; }
+    
+    .reset-btn { padding: 15px 20px; font-size: 16px; font-weight: bold; background: #57606f; color: white; border: none; border-radius: 8px; cursor: pointer; }
+    .reset-btn:hover { background: #747d8c; }
 
     .winner-box { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; width: 100%; }
     .winner-card { background: #ffa502; color: #2f3542; font-size: 18px; font-weight: bold; padding: 15px 25px; border-radius: 8px; animation: pop 0.4s ease; }
@@ -37,7 +41,11 @@
   <div id="qrcode"></div>
   
   <div class="count">현재 참가인원: <span id="participantCount">0</span>명</div>
-  <button class="draw-btn" onclick="drawWinners()">5명 추첨하기</button>
+  
+  <div class="btn-group">
+    <button class="draw-btn" onclick="drawWinners()">5명 추첨하기</button>
+    <button class="reset-btn" onclick="resetData()">명단 초기화 🔄</button>
+  </div>
 
   <div class="winner-box" id="winnerContainer"></div>
 </div>
@@ -60,7 +68,7 @@
     height: 200
   });
 
-  // 2. 캐시 방지(cache: 'no-cache')를 적용하여 실시간 데이터 수신
+  // 2. 캐시 방지 적용하여 실시간 데이터 수신
   async function fetchParticipants() {
     try {
       const res = await fetch(API_URL, { cache: 'no-cache' });
@@ -113,6 +121,27 @@
         winnerContainer.appendChild(card);
       }, index * 300);
     });
+  }
+
+  // 4. 명단 초기화 기능
+  async function resetData() {
+    if (!confirm("정말로 모든 참가자 명단과 당첨 결과를 초기화하시겠습니까?")) {
+      return;
+    }
+
+    try {
+      await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ participants: [] })
+      });
+
+      document.getElementById('winnerContainer').innerHTML = '';
+      alert("참가자 명단이 완전히 초기화되었습니다.");
+      fetchParticipants();
+    } catch (err) {
+      alert("초기화 중 오류가 발생했습니다. 다시 시도해 주세요.");
+    }
   }
 </script>
 
