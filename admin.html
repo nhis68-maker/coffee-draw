@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>커피쿠폰 추첨 관리자 화면</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans KR', sans-serif; background: #2f3542; color: white; display: flex; height: 100vh; padding: 20px; gap: 20px; }
+    .left-panel { flex: 1; background: #353b48; border-radius: 16px; padding: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .right-panel { flex: 1; background: #353b48; border-radius: 16px; padding: 30px; display: flex; flex-direction: column; }
+    
+    #qrcode { background: white; padding: 20px; border-radius: 12px; margin: 20px 0; }
+    .count { font-size: 20px; font-weight: bold; color: #ffa502; margin-bottom: 20px; }
+    
+    .draw-btn { padding: 15px 30px; font-size: 20px; font-weight: bold; background: #ff4757; color: white; border: none; border-radius: 8px; cursor: pointer; }
+    .draw-btn:hover { background: #ff6b81; }
+
+    .winner-box { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; width: 100%; }
+    .winner-card { background: #ffa502; color: #2f3542; font-size: 18px; font-weight: bold; padding: 15px 25px; border-radius: 8px; animation: pop 0.4s ease; }
+
+    .participant-list { flex: 1; overflow-y: auto; background: #2f3542; border-radius: 8px; padding: 15px; margin-top: 10px; }
+    .participant-item { padding: 8px 12px; border-bottom: 1px solid #474747; font-size: 16px; }
+
+    @keyframes pop {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="left-panel">
+  <h1>? 월간 교육 커피쿠폰 추첨</h1>
+  <p style="margin-top: 10px; color: #a4b0be;">스마트폰 카메라로 QR 코드를 스캔하세요!</p>
+  
+  <div id="qrcode"></div>
+  
+  <div class="count">현재 참가인원: <span id="participantCount">0</span>명</div>
+  <button class="draw-btn" onclick="drawWinners()">5명 추첨하기</button>
+
+  <div class="winner-box" id="winnerContainer"></div>
+</div>
+
+<div class="right-panel">
+  <h2>실시간 참가자 목록</h2>
+  <div class="participant-list" id="participantList"></div>
+</div>
+
+<script>
+  // TODO: https://www.npoint.io/docs/499721cec5b08e2a1c0b
+  const API_URL = "https://api.npoint.io/YOUR_BIN_ID";
+
+  let participants = [];
+
+  // 1. QR 코드 자동 생성
+  const targetUrl = window.location.href.replace('admin.html', 'index.html');
+  new QRCode(document.getElementById("qrcode"), {
+    text: targetUrl,
+    width: 200,
+    height: 200
+  });
+
+  // 2. 1.5초마다 데이터 불러와서 실시간 갱신
+  async function fetchParticipants() {
+    try {
+      const res = await fetch(API_URL);
+      const data = await res.json();
+      participants = data.participants || [];
+
+      const listElement = document.getElementById('participantList');
+      listElement.innerHTML = '';
+
+      participants.forEach((name) => {
+        const div = document.createElement('div');
+        div.className = 'participant-item';
+        div.textContent = name;
+        listElement.appendChild(div);
+      });
+
+      document.getElementById('participantCount').textContent = participants.length;
+    } catch (err) {
+      console.error("데이터 동기화 에러:", err);
+    }
+  }
+
+  // 주기적 동기화 시작 (1.5초 간격)
+  setInterval(fetchParticipants, 1500);
+  fetchParticipants();
+
+  // 3. 5명 추첨 로직
+  function drawWinners() {
+    if (participants.length < 5) {
+      alert(`참가자가 부족합니다. (현재 ${participants.length}명 / 최소 5명 필요)`);
+      return;
+    }
+
+    const shuffled = [...participants].sort(() => 0.5 - Math.random());
+    const winners = shuffled.slice(0, 5);
+
+    const winnerContainer = document.getElementById('winnerContainer');
+    winnerContainer.innerHTML = '';
+
+    winners.forEach((winner, index) => {
+      setTimeout(() => {
+        const card = document.createElement('div');
+        card.className = 'winner-card';
+        card.textContent = `?? ${winner}`;
+        winnerContainer.appendChild(card);
+      }, index * 300);
+    });
+  }
+</script>
+
+</body>
+</html>

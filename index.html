@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>커피쿠폰 추첨 응모</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans KR', sans-serif; background: #f5f6fa; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+    .card { background: white; width: 100%; max-width: 400px; padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; }
+    h2 { margin-bottom: 10px; color: #333; }
+    p { color: #666; font-size: 14px; margin-bottom: 25px; }
+    input { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; margin-bottom: 15px; outline: none; }
+    button { width: 100%; padding: 14px; background: #ff9f43; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; }
+    button:disabled { background: #ccc; }
+    .message { margin-top: 15px; font-weight: bold; color: #10ac84; display: none; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>? 커피쿠폰 추첨</h2>
+  <p>이름과 부서를 입력하여 응모해 주세요.</p>
+  <input type="text" id="userName" placeholder="예: 홍길동 (마케팅팀)">
+  <button id="submitBtn" onclick="registerUser()">응모하기</button>
+  <div id="message" class="message">응모가 완료되었습니다! ??</div>
+</div>
+
+<script>
+  // TODO: https://www.npoint.io/docs/499721cec5b08e2a1c0b
+  const API_URL = "https://api.npoint.io/YOUR_BIN_ID";
+
+  async function registerUser() {
+    const nameInput = document.getElementById('userName');
+    const submitBtn = document.getElementById('submitBtn');
+    const name = nameInput.value.trim();
+    
+    if (!name) {
+      alert('이름을 입력해 주세요.');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = '응모 중...';
+
+    try {
+      // 1. 기존 목록 불러오기
+      const getRes = await fetch(API_URL);
+      const data = await getRes.json();
+      
+      const currentList = data.participants || [];
+      currentList.push(name);
+
+      // 2. 새 이름 추가해서 저장하기
+      await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ participants: currentList })
+      });
+
+      document.getElementById('message').style.display = 'block';
+      nameInput.disabled = true;
+      submitBtn.textContent = '응모 완료';
+    } catch (err) {
+      alert('오류가 발생했습니다. 다시 시도해 주세요.');
+      submitBtn.disabled = false;
+      submitBtn.textContent = '응모하기';
+    }
+  }
+</script>
+
+</body>
+</html>
