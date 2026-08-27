@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ä¿ÇÇÄíÆù ÃßÃ· ÀÀ¸ğ</title>
+  <title>ì»¤í”¼ì¿ í° ì¶”ì²¨ ì‘ëª¨</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Noto Sans KR', sans-serif; background: #f5f6fa; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
@@ -19,11 +19,11 @@
 <body>
 
 <div class="card">
-  <h2>? Ä¿ÇÇÄíÆù ÃßÃ·</h2>
-  <p>ÀÌ¸§°ú ºÎ¼­¸¦ ÀÔ·ÂÇÏ¿© ÀÀ¸ğÇØ ÁÖ¼¼¿ä.</p>
-  <input type="text" id="userName" placeholder="¿¹: È«±æµ¿ (¸¶ÄÉÆÃÆÀ)">
-  <button id="submitBtn" onclick="registerUser()">ÀÀ¸ğÇÏ±â</button>
-  <div id="message" class="message">ÀÀ¸ğ°¡ ¿Ï·áµÇ¾ú½À´Ï´Ù! ??</div>
+  <h2>? ì»¤í”¼ì¿ í° ì¶”ì²¨</h2>
+  <p>ì´ë¦„ê³¼ ë¶€ì„œë¥¼ ì…ë ¥í•˜ì—¬ ì‘ëª¨í•´ ì£¼ì„¸ìš”.</p>
+  <input type="text" id="userName" placeholder="ì˜ˆ: í™ê¸¸ë™ (ë§ˆì¼€íŒ…íŒ€)">
+  <button id="submitBtn" onclick="registerUser()">ì‘ëª¨í•˜ê¸°</button>
+  <div id="message" class="message">ì‘ëª¨ê°€ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤! ??</div>
 </div>
 
 <script>
@@ -36,22 +36,22 @@
     const name = nameInput.value.trim();
     
     if (!name) {
-      alert('ÀÌ¸§À» ÀÔ·ÂÇØ ÁÖ¼¼¿ä.');
+      alert('ì´ë¦„ì„ ì…ë ¥í•´ ì£¼ì„¸ìš”.');
       return;
     }
 
     submitBtn.disabled = true;
-    submitBtn.textContent = 'ÀÀ¸ğ Áß...';
+    submitBtn.textContent = 'ì‘ëª¨ ì¤‘...';
 
     try {
-      // 1. ±âÁ¸ ¸ñ·Ï ºÒ·¯¿À±â
+      // 1. ê¸°ì¡´ ëª©ë¡ ë¶ˆëŸ¬ì˜¤ê¸°
       const getRes = await fetch(API_URL);
       const data = await getRes.json();
       
       const currentList = data.participants || [];
       currentList.push(name);
 
-      // 2. »õ ÀÌ¸§ Ãß°¡ÇØ¼­ ÀúÀåÇÏ±â
+      // 2. ìƒˆ ì´ë¦„ ì¶”ê°€í•´ì„œ ì €ì¥í•˜ê¸°
       await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -60,11 +60,11 @@
 
       document.getElementById('message').style.display = 'block';
       nameInput.disabled = true;
-      submitBtn.textContent = 'ÀÀ¸ğ ¿Ï·á';
+      submitBtn.textContent = 'ì‘ëª¨ ì™„ë£Œ';
     } catch (err) {
-      alert('¿À·ù°¡ ¹ß»ıÇß½À´Ï´Ù. ´Ù½Ã ½ÃµµÇØ ÁÖ¼¼¿ä.');
+      alert('ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤. ë‹¤ì‹œ ì‹œë„í•´ ì£¼ì„¸ìš”.');
       submitBtn.disabled = false;
-      submitBtn.textContent = 'ÀÀ¸ğÇÏ±â';
+      submitBtn.textContent = 'ì‘ëª¨í•˜ê¸°';
     }
   }
 </script>
