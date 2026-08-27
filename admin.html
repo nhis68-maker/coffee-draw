@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>Ä¿ÇÇÄíÆù ÃßÃ· °ü¸®ÀÚ È­¸é</title>
+  <title>ì»¤í”¼ì¿ í° ì¶”ì²¨ ê´€ë¦¬ì í™”ë©´</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -31,19 +31,19 @@
 <body>
 
 <div class="left-panel">
-  <h1>? ¿ù°£ ±³À° Ä¿ÇÇÄíÆù ÃßÃ·</h1>
-  <p style="margin-top: 10px; color: #a4b0be;">½º¸¶Æ®Æù Ä«¸Ş¶ó·Î QR ÄÚµå¸¦ ½ºÄµÇÏ¼¼¿ä!</p>
+  <h1>? ì›”ê°„ êµìœ¡ ì»¤í”¼ì¿ í° ì¶”ì²¨</h1>
+  <p style="margin-top: 10px; color: #a4b0be;">ìŠ¤ë§ˆíŠ¸í° ì¹´ë©”ë¼ë¡œ QR ì½”ë“œë¥¼ ìŠ¤ìº”í•˜ì„¸ìš”!</p>
   
   <div id="qrcode"></div>
   
-  <div class="count">ÇöÀç Âü°¡ÀÎ¿ø: <span id="participantCount">0</span>¸í</div>
-  <button class="draw-btn" onclick="drawWinners()">5¸í ÃßÃ·ÇÏ±â</button>
+  <div class="count">í˜„ì¬ ì°¸ê°€ì¸ì›: <span id="participantCount">0</span>ëª…</div>
+  <button class="draw-btn" onclick="drawWinners()">5ëª… ì¶”ì²¨í•˜ê¸°</button>
 
   <div class="winner-box" id="winnerContainer"></div>
 </div>
 
 <div class="right-panel">
-  <h2>½Ç½Ã°£ Âü°¡ÀÚ ¸ñ·Ï</h2>
+  <h2>ì‹¤ì‹œê°„ ì°¸ê°€ì ëª©ë¡</h2>
   <div class="participant-list" id="participantList"></div>
 </div>
 
@@ -53,7 +53,7 @@
 
   let participants = [];
 
-  // 1. QR ÄÚµå ÀÚµ¿ »ı¼º
+  // 1. QR ì½”ë“œ ìë™ ìƒì„±
   const targetUrl = window.location.href.replace('admin.html', 'index.html');
   new QRCode(document.getElementById("qrcode"), {
     text: targetUrl,
@@ -61,7 +61,7 @@
     height: 200
   });
 
-  // 2. 1.5ÃÊ¸¶´Ù µ¥ÀÌÅÍ ºÒ·¯¿Í¼­ ½Ç½Ã°£ °»½Å
+  // 2. 1.5ì´ˆë§ˆë‹¤ ë°ì´í„° ë¶ˆëŸ¬ì™€ì„œ ì‹¤ì‹œê°„ ê°±ì‹ 
   async function fetchParticipants() {
     try {
       const res = await fetch(API_URL);
@@ -80,18 +80,18 @@
 
       document.getElementById('participantCount').textContent = participants.length;
     } catch (err) {
-      console.error("µ¥ÀÌÅÍ µ¿±âÈ­ ¿¡·¯:", err);
+      console.error("ë°ì´í„° ë™ê¸°í™” ì—ëŸ¬:", err);
     }
   }
 
-  // ÁÖ±âÀû µ¿±âÈ­ ½ÃÀÛ (1.5ÃÊ °£°İ)
+  // ì£¼ê¸°ì  ë™ê¸°í™” ì‹œì‘ (1.5ì´ˆ ê°„ê²©)
   setInterval(fetchParticipants, 1500);
   fetchParticipants();
 
-  // 3. 5¸í ÃßÃ· ·ÎÁ÷
+  // 3. 5ëª… ì¶”ì²¨ ë¡œì§
   function drawWinners() {
     if (participants.length < 5) {
-      alert(`Âü°¡ÀÚ°¡ ºÎÁ·ÇÕ´Ï´Ù. (ÇöÀç ${participants.length}¸í / ÃÖ¼Ò 5¸í ÇÊ¿ä)`);
+      alert(`ì°¸ê°€ìê°€ ë¶€ì¡±í•©ë‹ˆë‹¤. (í˜„ì¬ ${participants.length}ëª… / ìµœì†Œ 5ëª… í•„ìš”)`);
       return;
     }
 
