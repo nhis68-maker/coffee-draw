@@ -48,7 +48,6 @@
 </div>
 
 <script>
-  // 올바른 API 주소 (api.npoint.io)
   const API_URL = "https://api.npoint.io/2b0ec784b5ba17da70e2";
 
   let participants = [];
@@ -61,12 +60,17 @@
     height: 200
   });
 
-  // 2. 1.5초마다 데이터 불러와서 실시간 갱신
+  // 2. 캐시 방지(cache: 'no-cache')를 적용하여 실시간 데이터 수신
   async function fetchParticipants() {
     try {
-      const res = await fetch(API_URL);
+      const res = await fetch(API_URL, { cache: 'no-cache' });
       const data = await res.json();
-      participants = data.participants || [];
+      
+      if (data && Array.isArray(data.participants)) {
+        participants = data.participants;
+      } else {
+        participants = [];
+      }
 
       const listElement = document.getElementById('participantList');
       listElement.innerHTML = '';
@@ -84,7 +88,7 @@
     }
   }
 
-  // 주기적 동기화 시작 (1.5초 간격)
+  // 1.5초마다 주기적으로 확인
   setInterval(fetchParticipants, 1500);
   fetchParticipants();
 
